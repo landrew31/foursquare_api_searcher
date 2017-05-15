@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+53e516ec498ed3877e18b4f4,золотой дуб,"['Ул. Мальцева Георгия', 'С. Крюковщина', 'Україна']",50.37188296205586,30.3893324576387,12,0,17,18,1,0,['52e81612bcbc57f1066b7a26'],['Recreation Center'],0
+52bdecc911d2cfa8af059018,"Поселок ""Удачный""",['Україна'],50.37378299705635,30.397320532728518,58,0,22,69,3,0,['530e33ccbcbc57f1066bbff9'],['Village'],0
+56507886498ee2f563565d9c,ЖК «Orange Park»,"['Одесская, 23', 'Крюковщина', 'Україна']",50.369754646772755,30.39071576934449,77,0,145,310,0,0,['4f2a210c4b9023bd5841ed28'],['Housing Development'],0

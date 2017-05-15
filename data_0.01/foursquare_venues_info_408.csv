@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+5777fbdb498e532e845dcdc7,Sky Beach Bar,['Україна'],50.49050301535721,30.558120906836656,46,0,46,48,2,0,['4bf58dd8d48988d16d941735'],['Café'],0
+54b0ee3e498e6ffea54c5bab,Автокрісла.com,['Україна'],50.490005,30.560684,5,0,5,5,0,0,['4bf58dd8d48988d1f8941735'],['Furniture / Home Store'],0
+5197c915498ea88ef647191c,Вилла Ракшей,['Україна'],50.480935,30.562893,37,0,35,81,0,0,['4d954b06a243a5684965b473'],['Residential Building (Apartment / Condo)'],0

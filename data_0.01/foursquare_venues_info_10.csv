@@ -1,0 +1,3 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+559518c9498eac33965a16d7,"Администрация рынка ""Столичный""","['Б.Окружная 110а', 'Київ', 'Україна']",50.380601045693815,30.431990214010717,25,0,11,31,0,0,['50be8ee891d4fa8dcc7199a7'],['Market'],0
+5222fd8c11d247a9545d2c26,Павільйон „Овочі та фрукти”,['Україна'],50.381070697479586,30.43107548637011,208,1,82,233,5,5.9,['50be8ee891d4fa8dcc7199a7'],['Market'],9

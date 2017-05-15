@@ -1,0 +1,5 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+4fd48f48e4b0b3abb3c75d35,Мiстечко митцiв,"['Сошенко,33', 'Київ', 'Україна']",50.52313636218987,30.437861354829415,29,0,28,29,0,0,['4bf58dd8d48988d1e2931735'],['Art Gallery'],0
+54356178498e72e113ae033d,Шиномонтаж,['Україна'],50.52355670964488,30.437838760575676,10,0,16,19,0,0,['4f04ae1f2fb6e1c99f3db0ba'],['Car Wash'],0
+4fd4ddf3e4b0052fbc23b9af,"Художні майстерні на Сошенка, 33","['Сошенка 33', 'Київ', 'Україна']",50.52358318352992,30.43791801472814,50,2,62,78,3,0,"['52e81612bcbc57f1066b7a32', '4bf58dd8d48988d1e2931735', '4bf58dd8d48988d1aa941735']","['Cultural Center', 'Art Gallery', 'College Quad']",0
+5353e5fb11d2d899c24a93ec,Лесок,"['Київ', 'Україна']",50.52183817706086,30.433234616850985,46,0,47,60,2,0,['4bf58dd8d48988d1e4941735'],['Campground'],0

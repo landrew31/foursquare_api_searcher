@@ -1,0 +1,3 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+5380bed2498e1eadd022a1f4,Яхта Pilar,['Україна'],50.37347611575629,30.58401431863506,2,0,2,2,0,0,['4eb1d4dd4b900d56c88a45fd'],['River'],0
+585d397d9398ab59400779d3,Корпоратив КБК,['Україна'],50.372968,30.579195,2,0,2,2,0,0,['56aa371be4b08b9a8d57356a'],['Outdoor Event Space'],0

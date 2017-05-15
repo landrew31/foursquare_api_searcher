@@ -1,0 +1,3 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+536f83dc498e77a9a90a861d,ПДН,['Україна'],50.503443,30.540647,3,0,4,4,0,0,['52e81612bcbc57f1066b7a22'],['Botanical Garden'],0
+4fe71401e4b04318c457fa75,Мост в парке Дружбы Народов,"['Парк Дружбы Народов', 'Київ', 'Україна']",50.50658312865582,30.54386465647057,83,0,83,85,3,0,['4bf58dd8d48988d1df941735'],['Bridge'],0

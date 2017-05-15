@@ -1,0 +1,2 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+53b3cc0e498e3a1b1775112f,Медпункт НТУ,"['Киквидзе', 'Україна']",50.511388019438776,30.552039951709062,8,2,6,9,1,0,['4bf58dd8d48988d196941735'],['Hospital'],0

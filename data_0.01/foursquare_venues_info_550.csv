@@ -1,0 +1,2 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+58adbd6298f8aa4ddf2595da,"СТО ""Немец""","['Ул. Верности 1', 'Київ', 'Україна']",50.522935,30.586029,1,0,2,2,0,0,['52f2ab2ebcbc57f1066b8b44'],['Auto Garage'],0

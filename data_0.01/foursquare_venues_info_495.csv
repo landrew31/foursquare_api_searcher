@@ -1,0 +1,3 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+53381bdc498ec8441e1879e2,трасса на Вышгород,['Україна'],50.517991874277484,30.383842035907712,11,0,8,11,0,0,['4bf58dd8d48988d1f9931735'],['Road'],0
+5232926d11d21dea927c74e4,Лесок,['Україна'],50.51986265284929,30.38642156066239,15,1,12,15,0,0,['4bf58dd8d48988d162941735'],['Other Great Outdoors'],0

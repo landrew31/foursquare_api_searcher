@@ -1,0 +1,2 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+550f03d3498e3f22bf52de10,"лес, трасса","['Варшавское Шоссе', 'Україна']",50.52219726082553,30.35100021141218,35,0,25,40,0,0,['52e81612bcbc57f1066b7a21'],['National Park'],0

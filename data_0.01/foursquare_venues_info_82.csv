@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+508d2afce4b0b3d62eaa0c27,Школа №279 ім. Петра Григоренка,"['вул. Сергія Колоса, 50', 'Київ, 02000', 'Україна']",50.39242666746097,30.4492630566117,101,0,86,291,2,0,['4bf58dd8d48988d13b941735'],['School'],0
+562cf593498efb84a6a0778b,вул. Ленiна,['Україна'],50.39351511272173,30.445539789044023,73,0,2,73,0,0,['4bf58dd8d48988d1f9931735'],['Road'],0
+5353ed05498e997bcde1f4f0,Fazenda,['Україна'],50.39429,30.448476,18,0,7,21,0,0,['4bf58dd8d48988d15a941735'],['Garden'],0

@@ -1,0 +1,5 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+58b1ad5af7f8dd378ca8afdb,F'91 Ukrainian Megastore,"['вул. Берковецька 6', 'Київ', 'Україна']",50.496937,30.354689,1,0,1,1,0,0,['4bf58dd8d48988d1ff941735'],['Miscellaneous Shop'],0
+4feaa8e0e4b0accd04c02dc7,СТО Citroën Peugeot,"['вул. Берковецька, 6', 'Київ', 'Україна']",50.499868,30.357501,68,1,75,152,5,0,['4bf58dd8d48988d124951735'],['Automotive Shop'],0
+583ff7784287c95a4e1efa55,ЭЛЬДОРАДО,['Україна'],50.495013,30.35798,15,0,9,15,0,5.8,['4bf58dd8d48988d122951735'],['Electronics Store'],0
+590ef864a35dce1a170d067f,Zerno Coffee,"['Берковецька, 6д', 'Київ', 'Україна']",50.49609,30.357588,8,0,5,8,0,0,['4bf58dd8d48988d1e0931735'],['Coffee Shop'],0

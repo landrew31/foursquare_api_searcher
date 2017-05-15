@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+559d054a498eede99c53b8c7,Pool Party🏊🏻,['Україна'],50.374864224416655,30.423423692745185,2,0,2,2,0,0,['4bf58dd8d48988d15e941735'],['Pool'],0
+5789fb11498eeeaf2be6119f,Кукулабия,"['Большая Кольцевая 110а', 'Київ', 'Україна']",50.379971,30.425407,84,3,167,184,13,7.3,['4bf58dd8d48988d166941735'],['Sculpture Garden'],17
+578a439acd109da29f8c9ff1,Агропарк Кукулабия,['Україна'],50.378617,30.423361,113,6,179,190,14,5.3,['4bf58dd8d48988d163941735'],['Park'],28

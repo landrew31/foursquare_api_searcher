@@ -1,0 +1,3 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+53fc6c1f498ebd6e2a092f9e,ЦЗС аэропорт Борисполь,['Україна'],50.379328915153266,30.6663316509879,48,0,49,50,0,0,[],[],0
+5367a6ca498ed1f0fb2c6095,Станція теплопостачання Позняки,"['вул. Ревуцького, 41', 'Київ, 02121', 'Україна']",50.37357825592165,30.662026405334473,3,0,3,4,0,0,['4eb1bea83b7b6f98df247e06'],['Factory'],0

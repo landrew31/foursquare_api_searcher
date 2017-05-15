@@ -1,0 +1,3 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+5002b03de4b0d5040ef1f6a2,Баня,['Україна'],50.5222369203694,30.424945516717653,12,0,10,12,0,0,['4bf58dd8d48988d117941735'],['Beer Garden'],0
+51e2d1b7498eaa324b37fc9a,Футбольное Поле В Лесу,['Україна'],50.523679,30.419708,4,1,3,4,0,0,['4cce455aebf7b749d5e191f5'],['Soccer Field'],0

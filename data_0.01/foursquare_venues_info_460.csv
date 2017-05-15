@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+5506dd88498e3c6d80d0d054,Ліс Берковець,"['Берковець', 'Україна']",50.501894676940815,30.38151680466582,38,0,28,61,1,0,['52e81612bcbc57f1066b7a23'],['Forest'],0
+54d755ee498e30cf3e79da7d,банька у Валеры,['Україна'],50.50134757246381,30.385183726696177,32,0,20,74,0,0,['52e81612bcbc57f1066b7a33'],['Social Club'],0
+55a12bf3498e3c94e31ec32d,somewhere far beyond,['Україна'],50.502627960309475,30.38727605536627,42,0,23,74,2,0,['52e81612bcbc57f1066b7a10'],['Summer Camp'],0

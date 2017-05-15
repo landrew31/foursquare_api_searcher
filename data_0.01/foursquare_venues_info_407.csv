@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+517a5381e4b020d118fd78f9,База Козачек,"['Труханов Остров', 'Київ', 'Україна']",50.48556705613639,30.55041483818959,6,1,6,6,0,0,['4bf58dd8d48988d1e2941735'],['Beach'],0
+51c71911498e59e2f5583e55,Пляж на Русановских садах,['Україна'],50.482376,30.555464,129,2,91,153,2,0,['4bf58dd8d48988d1e2941735'],['Beach'],0
+4c288df8ce3fc92806456d88,BreakWater,"['Труханов остров (Трухановская, 40)', 'Київ', 'Україна']",50.485531880197996,30.550561818739453,2254,28,1828,3867,117,8.4,"['4bf58dd8d48988d1e3941735', '4bf58dd8d48988d1e0941735']","['Surf Spot', 'Harbor / Marina']",152

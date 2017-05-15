@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+5143169fe4b01387323b3d23,Атем,['Україна'],50.38775027089785,30.577358021381194,124,0,12,124,0,0,['4eb1bea83b7b6f98df247e06'],['Factory'],0
+58808529c7ec6b04d7806de3,"Храм ""Нестора Летописца""","['Промислова', 'Київ', 'Україна']",50.384409,30.578949,5,0,2,5,0,0,['4bf58dd8d48988d132941735'],['Church'],0
+4e534a1a1495a46b65b56627,Асфальтобетонный завод / Bituminous Concrete Plant,"['вул. Камишинська, 13 (вул. Промислова)', 'Київ', 'Україна']",50.38754189042764,30.577466439661222,1019,3,87,1224,2,0,['4eb1bea83b7b6f98df247e06'],['Factory'],0

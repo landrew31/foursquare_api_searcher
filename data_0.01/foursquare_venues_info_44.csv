@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+5646feb3498e44610bdab94d,t-bone,"['Stloichnoe Shosse 110a', 'Україна']",50.383595790902234,30.429817586467788,28,3,16,29,2,0,['50be8ee891d4fa8dcc7199a7'],['Market'],0
+5210b63b11d232275c07ca5a,Павільйон „Ковбаси і сири” (А-10),['Україна'],50.38318996004622,30.43003668973049,134,1,45,139,5,0,['50be8ee891d4fa8dcc7199a7'],['Market'],0
+526e0c9111d29a5f96859672,Світ Ковбас,"['Київ', 'Україна']",50.38444750527459,30.42741598950449,492,10,793,1756,25,6.9,['4bf58dd8d48988d11d951735'],['Butcher'],41
