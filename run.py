@@ -48,8 +48,8 @@ FILE_NAME_PATTERN = '{dir}/foursquare_venues_info_{num}.csv'
 
 
 client = Foursquare(
-    client_id=SECRETS[2].get('client_id'),
-    client_secret=SECRETS[2].get('client_secret'),
+    client_id=SECRETS[1].get('client_id'),
+    client_secret=SECRETS[1].get('client_secret'),
     version='20170514',
 )
 

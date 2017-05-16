@@ -1,0 +1,4 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+5777d4f0498e5d7f65d258f9,"Real Man's Club ""Garage. For Ladies""",['Україна'],50.444186,30.344697,3,0,2,4,0,0,['52e81612bcbc57f1066b7a26'],['Recreation Center'],0
+55957814498e20cc5f3ced51,Озеро🌅,['Україна'],50.44381287659041,30.342000213577094,38,0,40,106,0,0,['4bf58dd8d48988d161941735'],['Lake'],0
+50bd8da8e4b0ced420f6b660,Клиническая больница 7,"['Котельникова 95', 'Україна']",50.444071235357434,30.33936782508983,23,0,19,27,0,0,['4bf58dd8d48988d104941735'],['Medical Center'],0

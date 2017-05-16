@@ -1,0 +1,3 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+4f8fb98de4b0736826fb4c25,Завод ДВРЗ,['Україна'],50.44976778403796,30.680378863141016,89,0,67,93,1,0,['4eb1bea83b7b6f98df247e06'],['Factory'],0
+57a2c6c0498e892210d927cb,"Кінцева зупинка трамваю №33 ""ДВРЗ""",['Україна'],50.449281,30.678197,91,0,14,97,0,0,['52f2ab2ebcbc57f1066b8b51'],['Tram Station'],0

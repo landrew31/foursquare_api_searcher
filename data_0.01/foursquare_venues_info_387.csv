@@ -1,0 +1,3 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+5378a9fd498ec0ae7c4a0f1f,Краденные лесные цветы вдоль трассы со сплошной,['Україна'],50.489040438743004,30.355595107623067,33,0,39,51,0,0,['4bf58dd8d48988d11b951735'],['Flower Shop'],0
+5675a44f498e06996845ed2f,ФатимаCentr 2,"['Коцюбинское (Доковская 10)', 'Україна']",50.489333388553355,30.356135557559714,16,0,4,18,0,0,['4f2a210c4b9023bd5841ed28'],['Housing Development'],0

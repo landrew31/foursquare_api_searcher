@@ -1,0 +1,5 @@
+id,name,formattedAddress,lat,lng,checkinsCount,tipCount,usersCount,visitsCount,likesCount,rating,categories_ids,categories_names,ratingSignals
+56c80c99498e313940f1c5f9,Київський обласний центр збору призовників.,"['Оросительная 17А', 'Київ', 'Україна']",50.438435,30.67955,4,0,8,9,0,0,['4bf58dd8d48988d126941735'],['Government Building'],0
+5277832c11d27167abc0f7df,Астори,['Україна'],50.43464660644531,30.67856788635254,4,0,4,6,0,0,['4bf58dd8d48988d147941735'],['Diner'],0
+548c466f498edc77fcccf38e,haus Boris),['Україна'],50.43139142299723,30.678956182668415,19,0,114,154,0,0,['4d954b06a243a5684965b473'],['Residential Building (Apartment / Condo)'],0
+54b38d31498e143afed05aa0,rapid,"['Оросительная', 'Київ', 'Україна']",50.4322424517241,30.679685469436322,12,0,16,21,0,0,['52e81612bcbc57f1066b7a36'],['Warehouse'],0
