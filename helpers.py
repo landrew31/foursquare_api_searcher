@@ -1,3 +1,25 @@
+import os
+import logging
+
+
+def configure_logger(name):
+    log_formatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+    log = logging.getLogger(name)
+    log.setLevel(logging.DEBUG)
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(log_formatter)
+    log.addHandler(console_handler)
+    return log
+
+
+log = configure_logger(__name__)
+
+
+def ensure_dir(directory):
+    if not os.path.exists(directory):
+        log.info('New Directory /{}/ created'.format(directory))
+        os.mkdir(directory)
+
 
 def get_venue_fields():
     return [

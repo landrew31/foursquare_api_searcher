@@ -1,224 +1,30 @@
-from foursquare import Foursquare
-from pprint import pprint
-import argparse
-import logging
-import csv
-import os
-from helpers import (
-    get_category_dict,
-    get_category_fields,
-    get_venue_dict,
-    get_venue_fields,
-    get_four_split_squares,
+import sys
+from foursquare_parser import (
+    parse_venues,
+    parse_map,
+    parse_categories,
 )
+from aggregator import regionalize_files
+from command_executor import CommandExecutor
 
 
-logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(logFormatter)
-log.addHandler(consoleHandler)
-
-
-SECRETS = [
-    {
-        'client_id': 'SCCALEKAQBLZ12ZOZ350IRAKINTU44FQFV2M5U4SYKFJQUZE',
-        'client_secret': 'K2SLCAL3HQDSCDM21JYTXA5ZGPWJPQXP2FWA4GBX5UOEQKLQ',
-    },
-    {
-        'client_id': 'YG5ZNP20FTHLWWREAEUOXUBSGARUZDPUQ5PB3Q55LEPQTSQ5',
-        'client_secret': 'UDZHWREXNOHNGWVBZG2SD1AFLTLNKHOKGEHZLIHZXEKJUHTP',
-    },
-    {
-        'client_id': '1CVW4TUW3TAR2LC3XAOR3UVO4NYPB2AG1TP5BMIEJSRAR1ZT',
-        'client_secret': 'CNCXEQV14CVPEMQPJTU2ZVDITXGQPKBT0M00KQ3IDRPCHQ3J',
-    },
-]
-
-KYIV_SQUARE = {
-    'top_latitude': '50.370877',
-    'top_longitude': '30.338019',
-    'bottom_latitude': '50.523706',
-    'bottom_longitude': '30.680739',
+command_mapper = {
+    'run_from_number': CommandExecutor(parse_map, (int,)),
+    'get_categories': CommandExecutor(parse_categories),
+    'parse_square': CommandExecutor(parse_venues, (int,)),
+    'regionalize': CommandExecutor(regionalize_files, (int, int)),
 }
-SUBSQUARE_SIZE = 0.01
-DIRECTORY_PATTERN = 'data_{step}'.format(step=SUBSQUARE_SIZE)
-FILE_NAME_PATTERN = '{dir}/foursquare_venues_info_{num}.csv'
-
-
-client = Foursquare(
-    client_id=SECRETS[1].get('client_id'),
-    client_secret=SECRETS[1].get('client_secret'),
-    version='20170514',
-)
-
-
-def process_raw_category(raw, sub_cats_list):
-    for sub_raw in raw['categories']:
-        sub_cats_list = list(
-            set(sub_cats_list) & set(process_raw_category(sub_raw, sub_cats_list))
-        )
-        sub_cats_list.extend(sub_cats_list)
-    return sub_cats_list
-
-
-def parse_categories():
-    with open('foursquare_categories_info_v2.csv', mode='w') as f:
-        fieldnames = get_category_fields()
-        writer = csv.DictWriter(f, fieldnames)
-        writer.writeheader()
-        cats = client.venues.categories().get('categories')
-        for cat in cats:
-            d = get_category_dict(cat)
-            d['categories'] = process_raw_category(cat, d['categories'])
-            log.info('Going to write category: {}'.format(d))
-            writer.writerow(d)
-
-
-def process_venues(ids, writer):
-    venue_info = [
-        get_venue_dict(
-            client.venues(venue_id).get('venue')
-        ) for venue_id in ids
-    ]
-    log.debug('Going to write {num} venues'.format(num=len(venue_info)))
-    for info in venue_info:
-        writer.writerow(info)
-
-
-def process_square(location, writer):
-    venues_req = client.venues.search(params={
-        'sw': '{},{}'.format(
-            location.get('top_latitude'),
-            location.get('top_longitude'),
-        ),
-        'ne': '{},{}'.format(
-            location.get('bottom_latitude'),
-            location.get('bottom_longitude'),
-        ),
-        'intent': 'browse',
-        'limit': 50,
-    })
-    venues = venues_req.get('venues')
-
-    log.info('Got {num} venues.'.format(num=len(venues)))
-
-    if len(venues) == 50:
-        splitted_locations = get_four_split_squares(location)
-        for loc in splitted_locations:
-            process_square(loc, writer)
-    else:
-        foursquare_ids = [v['id'] for v in venues]
-        log.info('Going to write {num} venues: {ids}'.format(
-            num=len(foursquare_ids),
-            ids=foursquare_ids,
-        ))
-        process_venues(foursquare_ids, writer)
-
-
-def ensure_dir(directory):
-    if not os.path.exists(directory):
-        log.info('New Directory /{}/ created'.format(directory))
-        os.mkdir(directory)
-
-
-
-def parse_venues(location, number):
-    ensure_dir(DIRECTORY_PATTERN)
-    file_name = FILE_NAME_PATTERN.format(
-        dir=DIRECTORY_PATTERN,
-        num=number,
-    )
-    with open(file_name, mode='w') as f:
-        fieldnames = get_venue_fields()
-        writer = csv.DictWriter(f, fieldnames)
-        writer.writeheader()
-        log.info('Gonna start processing venues!')
-        process_square(location, writer)
-
-
-def get_arguments():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-sn', '--start_number', required=False)
-    parser.add_argument('-gc', '--get_categories', required=False)
-    parser.add_argument('-s', '--square', required=False)
-    parser.add_argument('-a', '--aggregate', required=False)
-    args = parser.parse_args()
-    return args.start_number, args.get_categories, args.square, args.aggregate
-
-
-def get_max_number():
-    top_latitude = float(KYIV_SQUARE['top_latitude'])
-    top_longitude = float(KYIV_SQUARE['top_longitude'])
-    bottom_latitude = float(KYIV_SQUARE['bottom_latitude'])
-    bottom_longitude = float(KYIV_SQUARE['bottom_longitude'])
-    max_col_size = int((bottom_longitude - top_longitude) / SUBSQUARE_SIZE) + 1
-    max_row_size = int((bottom_latitude - top_latitude) / SUBSQUARE_SIZE) + 1
-    print(max_col_size, max_row_size)
-    return max_row_size * max_col_size
-
-
-def get_kyiv_square_by_number(number):
-    top_latitude = float(KYIV_SQUARE['top_latitude'])
-    top_longitude = float(KYIV_SQUARE['top_longitude'])
-    bottom_latitude = float(KYIV_SQUARE['bottom_latitude'])
-    bottom_longitude = float(KYIV_SQUARE['bottom_longitude'])
-    max_col_size = int((bottom_longitude - top_longitude) / SUBSQUARE_SIZE) + 1
-    max_row_size = int((bottom_latitude - top_latitude) / SUBSQUARE_SIZE) + 1
-    max_square_number = max_row_size * max_col_size
-    log.info('Max square number for Kyiv: {}={}x{}'.format(
-        max_square_number, max_row_size, max_col_size
-    ))
-    if number > max_square_number or number < 1:
-        raise ValueError('Wrong square number. Select value from 1 to {}'.format(max_square_number))
-    number -= 1
-    row_num = int(number / max_col_size)
-    col_num = number - row_num * max_col_size
-    base_hor = top_longitude + SUBSQUARE_SIZE * col_num
-    base_ver = top_latitude + SUBSQUARE_SIZE * row_num
-    return {
-        'top_latitude': base_ver,
-        'top_longitude': base_hor,
-        'bottom_latitude': (
-            base_ver + SUBSQUARE_SIZE
-            if base_ver + SUBSQUARE_SIZE < bottom_latitude
-            else bottom_latitude
-        ),
-        'bottom_longitude': (
-            base_hor + SUBSQUARE_SIZE
-            if base_hor + SUBSQUARE_SIZE < bottom_longitude
-            else bottom_longitude
-        ),
-    }
-
-
-def parse_map(start_parse_number=1):
-    ensure_dir(DIRECTORY_PATTERN)
-    for i in range(start_parse_number, get_max_number() + 1):
-        if not os.path.exists(FILE_NAME_PATTERN.format(
-            dir=DIRECTORY_PATTERN,
-            num=i,
-        )):
-            log.info('Going to parse venues for square: {}'.format(i))
-            parse_venues(get_kyiv_square_by_number(i), i)
-        else:
-            log.info('Venues for square: {} already exists!'.format(i))
-
-
-def aggregate_files():
-    pass
 
 
 if __name__ == '__main__':
-    start_square_number, get_categories, square, aggregate = get_arguments()
-    if start_square_number:
-        parse_map(int(start_square_number))
-    if get_categories:
-        parse_categories()
-    if square:
-        parse_venues(get_kyiv_square_by_number(int(square)), square)
-    if aggregate:
-        aggregate_files()
-    # print(get_max_number())
+    if len(sys.argv) < 2:
+        raise Exception('Use some of commands!')
 
+    command = command_mapper.get(sys.argv[1])
+
+    if not command:
+        raise Exception('Unknown command!')
+
+    arguments = sys.argv[2:]
+    command.validate(arguments)
+    command()
