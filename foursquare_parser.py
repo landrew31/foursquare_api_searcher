@@ -27,6 +27,7 @@ KYIV_SQUARE = {
 SUBSQUARE_SIZE = 0.01
 DIRECTORY_PATTERN = 'data_{step}'.format(step=SUBSQUARE_SIZE)
 FILE_NAME_PATTERN = '{dir}/foursquare_venues_info_{num}.csv'
+CATEGORIES_FILE_NAME = 'foursquare_categories_info_v2.csv'
 
 SECRETS = [
     {
@@ -61,7 +62,7 @@ def process_raw_category(raw, sub_cats_list):
 
 
 def parse_categories():
-    with open('foursquare_categories_info_v2.csv', mode='w') as f:
+    with open(CATEGORIES_FILE_NAME, mode='w') as f:
         fieldnames = get_category_fields()
         writer = csv.DictWriter(f, fieldnames)
         writer.writeheader()

@@ -4,7 +4,10 @@ from foursquare_parser import (
     parse_map,
     parse_categories,
 )
-from aggregator import regionalize_files
+from aggregator import (
+    regionalize_files,
+    aggregate_info,
+)
 from command_executor import CommandExecutor
 
 
@@ -13,6 +16,7 @@ command_mapper = {
     'get_categories': CommandExecutor(parse_categories),
     'parse_square': CommandExecutor(parse_venues, (int,)),
     'regionalize': CommandExecutor(regionalize_files, (int, int)),
+    'aggregate': CommandExecutor(aggregate_info),
 }
 
 

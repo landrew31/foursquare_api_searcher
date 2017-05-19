@@ -2,23 +2,28 @@ import csv
 import os
 import sys
 from helpers import (
+    get_category_fields,
     get_venue_fields,
+    get_aggregated_venue_fields,
     configure_logger,
     ensure_dir,
+    category_prefix_mapper,
+    get_category_sub_fields_dict,
+    add_venue_to_region_dict,
+    string_repr_into_array,
+    normalize_average,
 )
 from foursquare_parser import (
     get_max_col_size,
     get_max_row_size,
-    parse_venues,
-    parse_map,
-    parse_categories,
     DIRECTORY_PATTERN,
     FILE_NAME_PATTERN,
 )
 
-
+CATEGORIES_FILTERED_FILE_NAME = 'foursquare_categories_info_filtered.csv'
 REGIONALIZED_DIRECTORY = 'regionalized'
 REGIONALIZED_FILE_PATTERN = 'regionalized/venues_info_{num}.csv'
+AGGREGATED_FILE_NAME = 'aggregated_info.csv'
 
 
 log = configure_logger(__name__)
@@ -59,3 +64,48 @@ def regionalize_files(lat_part, long_part):
                         writer.writerow(line)
                 log.debug('Processed file: {}'.format(source_file_name))
         log.info('File wrote: {}'.format(file_name))
+
+
+def aggregate_info():
+    num_files = len([
+        f for f in os.listdir(REGIONALIZED_DIRECTORY)
+        if os.path.isfile(os.path.join(REGIONALIZED_DIRECTORY, f)) and f.endswith('.csv')
+    ])
+    cats_dict = {}
+    with open(CATEGORIES_FILTERED_FILE_NAME, 'r') as cats_file:
+        cats_reader = csv.DictReader(cats_file, get_category_fields())
+        for index, line in enumerate(cats_reader):
+            if index:
+                cats_dict[line['id']] = set(string_repr_into_array(line['categories']))
+                cats_dict[line['id']].add(line['id'])
+
+    with open(AGGREGATED_FILE_NAME, 'w') as aggregate_file:
+        writer = csv.DictWriter(aggregate_file, get_aggregated_venue_fields())
+        writer.writeheader()
+        for num in range(1, num_files + 1):
+            region_dict = {field: 0 for field in get_aggregated_venue_fields()}
+            region_dict['region_number'] = num
+            file_name = REGIONALIZED_FILE_PATTERN.format(num=num)
+            log.info('Is going to aggregate file: {}'.format(file_name))
+            with open(file_name, 'r') as f:
+                reader = csv.DictReader(f, get_venue_fields())
+                for index, line in enumerate(reader):
+                    if index:
+                        venue = {field: 0 for field in get_aggregated_venue_fields()[5:]}
+                        ids = set(string_repr_into_array(line['categories_ids']))
+                        good_cat = False
+                        for key, val in cats_dict.items():
+                            if val & ids:
+                                good_cat = True
+                                sub_fields_dict = get_category_sub_fields_dict(line, category_prefix_mapper.get(key))
+                                venue.update(sub_fields_dict)
+
+                        if good_cat:
+                            venue['all_count'] += 1
+                            region_dict = add_venue_to_region_dict(region_dict, venue)
+
+            log.info('Is going to write {} aggregated venues for region #{}'.format(
+                region_dict['all_count'], num
+            ))
+            region_dict = normalize_average(region_dict)
+            writer.writerow(region_dict)
