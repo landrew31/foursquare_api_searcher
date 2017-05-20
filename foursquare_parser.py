@@ -145,13 +145,13 @@ def get_max_number():
     return get_max_col_size() * get_max_row_size()
 
 
-def get_kyiv_square_by_number(number):
+def get_kyiv_square_by_number(number, lat_div=SUBSQUARE_SIZE, long_div=SUBSQUARE_SIZE):
     top_latitude = float(KYIV_SQUARE['top_latitude'])
     top_longitude = float(KYIV_SQUARE['top_longitude'])
     bottom_latitude = float(KYIV_SQUARE['bottom_latitude'])
     bottom_longitude = float(KYIV_SQUARE['bottom_longitude'])
-    max_col_size = int((bottom_longitude - top_longitude) / SUBSQUARE_SIZE) + 1
-    max_row_size = int((bottom_latitude - top_latitude) / SUBSQUARE_SIZE) + 1
+    max_col_size = int((bottom_longitude - top_longitude) / long_div) + 1
+    max_row_size = int((bottom_latitude - top_latitude) / lat_div) + 1
     max_square_number = max_row_size * max_col_size
     log.info('Max square number for Kyiv: {}={}x{}'.format(
         max_square_number, max_row_size, max_col_size
@@ -161,19 +161,19 @@ def get_kyiv_square_by_number(number):
     number -= 1
     row_num = int(number / max_col_size)
     col_num = number - row_num * max_col_size
-    base_hor = top_longitude + SUBSQUARE_SIZE * col_num
-    base_ver = top_latitude + SUBSQUARE_SIZE * row_num
+    base_hor = top_longitude + long_div * col_num
+    base_ver = top_latitude + lat_div * row_num
     return {
         'top_latitude': base_ver,
         'top_longitude': base_hor,
         'bottom_latitude': (
-            base_ver + SUBSQUARE_SIZE
-            if base_ver + SUBSQUARE_SIZE < bottom_latitude
+            base_ver + lat_div
+            if base_ver + lat_div < bottom_latitude
             else bottom_latitude
         ),
         'bottom_longitude': (
-            base_hor + SUBSQUARE_SIZE
-            if base_hor + SUBSQUARE_SIZE < bottom_longitude
+            base_hor + long_div
+            if base_hor + long_div < bottom_longitude
             else bottom_longitude
         ),
     }

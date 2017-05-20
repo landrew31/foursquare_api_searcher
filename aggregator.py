@@ -12,12 +12,14 @@ from helpers import (
     add_venue_to_region_dict,
     string_repr_into_array,
     normalize_average,
+    sum_general,
 )
 from foursquare_parser import (
     get_max_col_size,
     get_max_row_size,
     DIRECTORY_PATTERN,
     FILE_NAME_PATTERN,
+    get_kyiv_square_by_number,
 )
 
 CATEGORIES_FILTERED_FILE_NAME = 'foursquare_categories_info_filtered.csv'
@@ -104,8 +106,12 @@ def aggregate_info():
                             venue['all_count'] += 1
                             region_dict = add_venue_to_region_dict(region_dict, venue)
 
+            kyiv_sub_square = get_kyiv_square_by_number(num, 0.02, 0.05)
+            region_dict.update(kyiv_sub_square)
+
             log.info('Is going to write {} aggregated venues for region #{}'.format(
                 region_dict['all_count'], num
             ))
+            region_dict = sum_general(region_dict)
             region_dict = normalize_average(region_dict)
             writer.writerow(region_dict)

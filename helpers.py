@@ -20,6 +20,14 @@ category_prefix_mapper = {
     '4d4b7105d754a06379d81259': 'travel_transport',
 }
 
+categories_prefixes = [
+    'shop_service',
+    'arts_entertainment',
+    'travel_transport',
+    'food',
+    'outdoors',
+]
+
 category_subfields = [
     'count',
     'checkins_count',
@@ -29,6 +37,16 @@ category_subfields = [
     'likes_count',
     'average_rating',
     'with_rating_count',
+]
+
+general_fields = [
+    'all_checkins_count',
+    'all_tip_count',
+    'all_users_count',
+    'all_visits_count',
+    'all_likes_count',
+    'all_average_rating',
+    'all_with_rating_count',
 ]
 
 log = configure_logger(__name__)
@@ -115,8 +133,8 @@ def get_aggregated_venue_fields():
     fields = [
         'region_number',
         'top_latitude',
-        'bottom_latitude',
         'top_longitude',
+        'bottom_latitude',
         'bottom_longitude',
         'all_count',
     ]
@@ -124,6 +142,7 @@ def get_aggregated_venue_fields():
         fields.extend([
             '{}_{}'.format(cat, sub_field) for sub_field in category_subfields
         ])
+    fields.extend(general_fields)
     return fields
 
 
@@ -137,12 +156,8 @@ def add_venue_to_region_dict(region_dict, venue):
             average_key = key
         if 'with_rating_count' in key and value:
             rating_counts_key = key
-    # pprint(venue)
     if venue.get(rating_counts_key):
-        print(average_key, venue[average_key], venue[rating_counts_key], rating_counts_key)
-    if venue.get(rating_counts_key):
-        # print(venue[average_key], region_dict[average_key], region_dict[rating_counts_key])
-        region_dict[average_key] = venue[average_key]
+        region_dict[average_key] += venue[average_key]
     return region_dict
 
 
@@ -150,18 +165,27 @@ def normalize_average(region_dict):
     for key, value in region_dict.items():
         if 'average_rating' in key:
             cat_prefix = key[:len(key)-len('average_rating') - 1]
-            if region_dict[key]:
-                region_dict[key] = region_dict[key] / region_dict['{}_with_rating_count'.format(
+            if value:
+                region_dict[key] = value / region_dict['{}_with_rating_count'.format(
                     cat_prefix,
                 )]
     return region_dict
 
 
-def get_mid_point(loc):
+def sum_general(region_dict):
+    for field in category_subfields:
+        for key, value in region_dict.items():
+            if field in key and field != 'count':
+                region_dict['all_{}'.format(field)] += value
+    return region_dict
+
+
+def get_mid_point(loc, is_str=True):
     mid_lat = float(loc['top_latitude']) / 2 + float(loc['bottom_latitude']) / 2
     mid_long = float(loc['top_longitude']) / 2 + float(loc['bottom_longitude']) / 2
-    mid_lat = "{0:.6f}".format(mid_lat)
-    mid_long = "{0:.6f}".format(mid_long)
+    if is_str:
+        mid_lat = "{0:.6f}".format(mid_lat)
+        mid_long = "{0:.6f}".format(mid_long)
     return mid_lat, mid_long
 
 

@@ -1,0 +1,199 @@
+import pysal
+import math
+import numpy as np
+
+from pysal.weights.weights import WSP, WSP2W
+from pysal.esda.getisord import G_Local
+from pysal.spreg.ols import OLS
+from pysal.spreg.error_sp import GM_Error, GM_Combo, GM_Endog_Error
+
+from scipy.sparse import csc_matrix
+
+from aggregator import AGGREGATED_FILE_NAME
+from helpers import (
+    create_square,
+    get_mid_point,
+    categories_prefixes,
+    category_subfields,
+    configure_logger,
+)
+
+
+
+log = configure_logger(__name__)
+REGION_BANDWIDTH = 0.1
+WEIGHT_MATRIX_FILE_NAME = 'weights.gal'
+
+
+def get_weight(distance, venue_counts_index, power=2):
+    return 0 if distance > REGION_BANDWIDTH * (1 + venue_counts_index) else (
+        math.pow((
+            1 - math.pow(
+                max(distance - REGION_BANDWIDTH * venue_counts_index, 0)
+                / REGION_BANDWIDTH, power
+            )
+        ), power)
+    )
+
+
+def calculate_venue_quantity_index(row, all_quantities):
+    index = 0
+    for key, i in zip(
+            categories_prefixes,
+            range(6, len(row), len(category_subfields))
+    ):
+        index += row[i] / all_quantities.get(key)
+    return index / len(all_quantities.items())
+
+
+def calculate_locations_venues_count_index(loc1_index, loc2_index, power=2):
+    return math.pow(math.fabs(loc1_index - loc2_index), 1 / power)
+
+
+def calculate_distance(loc1, loc2):
+    mid_point1_lat, mid_point1_long = get_mid_point(loc1, is_str=False)
+    mid_point2_lat, mid_point2_long = get_mid_point(loc2, is_str=False)
+    return math.sqrt(
+        math.pow(mid_point1_lat - mid_point2_lat, 2) +
+        math.pow(mid_point1_long - mid_point2_long, 2)
+    )
+
+
+def make_weights():
+    log.debug('Opening aggregated data from {}'.format(AGGREGATED_FILE_NAME))
+    db = pysal.open(AGGREGATED_FILE_NAME)
+    fields_num = len(db.header)
+    db_size = len(db)
+    dist_matr = []
+    log.debug('Constructing venues counts by categories')
+    counts_by_category = {key: 0 for key in categories_prefixes}
+    for row in range(db_size):
+        for key, index in zip(
+            categories_prefixes,
+            range(6, fields_num, len(category_subfields))
+        ):
+            counts_by_category[key] += db[row][0][index]
+    log.debug('Is going to calculate elements of weight matrix')
+    for reg_row in db:
+        location_row = create_square(*reg_row[1:5])
+        loc_row_index = calculate_venue_quantity_index(reg_row, counts_by_category)
+        dist_row = []
+        for col in range(db_size):
+            reg_col = db[col][0]
+            distance = calculate_distance(
+                location_row,
+                create_square(*reg_col[1:5])
+            )
+            loc_col_index = calculate_venue_quantity_index(
+                reg_col, counts_by_category
+            )
+            row_col_index = calculate_locations_venues_count_index(
+                loc_row_index, loc_col_index,
+            )
+            weight = get_weight(distance, row_col_index) if len(dist_matr) != len(dist_row) else 0
+            log.debug('Weight for elements {} and {} is: {}'.format(
+                len(dist_matr), len(dist_row), weight,
+            ))
+            dist_row.append(weight)
+        dist_matr.append(dist_row)
+    log.info('Going to build PYSAL weight matrix.')
+    wsp_matrix = WSP(csc_matrix(dist_matr))
+    gal_format = pysal.open(WEIGHT_MATRIX_FILE_NAME, 'w')
+    gal_format.write(WSP2W(wsp_matrix))
+    gal_format.close()
+
+
+def get_weight_from_file():
+    w_file = pysal.open(WEIGHT_MATRIX_FILE_NAME)
+    return w_file.read()
+
+
+def get_variable_vector():
+    data_file = pysal.open(AGGREGATED_FILE_NAME, 'r')
+    return np.array(data_file.by_col('all_count'))
+
+
+def get_matrix_x():
+    data_file = pysal.open(AGGREGATED_FILE_NAME)
+    x = []
+    for row in data_file:
+        x.append(row[6:45])
+    return np.array(x)
+
+
+def calculate_gamma_index():
+    w = get_weight_from_file()
+    y = get_variable_vector()
+    g = pysal.Gamma(y, w)
+    print(g.g)
+    print("%.3f"%g.g_z)
+    print(g.p_sim_g)
+    print(g.min_g)
+    print(g.max_g)
+    print(g.mean_g)
+
+
+def calculate_join_count_statistics():
+    w = get_weight_from_file()
+    y = get_variable_vector()
+    jc = pysal.Join_Counts(y, w)
+    print(jc.bb)
+    print(jc.bw)
+    print(jc.ww)
+    print(jc.J)
+
+
+def calculate_moran_i():
+    w = get_weight_from_file()
+    y = get_variable_vector()
+    mi = pysal.Moran(y, w)
+    print("%.3f" % mi.I)
+    print(mi.EI)
+    print("%.3f" % mi.z_norm)
+    print("%.5f" % mi.p_norm)
+    print(mi.p_sim)
+    np.random.seed(10)
+    mir = pysal.Moran(y, w, permutations=9999)
+    print(mir.p_sim)
+
+
+def calculate_geary_c():
+    w = get_weight_from_file()
+    y = get_variable_vector()
+    gc = pysal.Geary(y, w)
+    print("%.3f" % gc.C)
+    print(gc.EC)
+    print("%.3f" % gc.z_norm)
+    print(gc.p_sim)
+
+
+def calculate_local_moran():
+    w = get_weight_from_file()
+    y = get_variable_vector()
+    lm = pysal.Moran_Local(y, w)
+    print(lm.p_sim)
+    sig = lm.p_sim < 0.01
+    print(lm.p_sim[sig])
+    print(lm.q[sig])
+
+
+def calculate_local_getis_and_ord():
+    w = get_weight_from_file()
+    y = get_variable_vector()
+    lg = G_Local(y, w)
+    print(lg.p_sim)
+    lg = G_Local(y, w, star=True)
+    print(lg.p_sim)
+
+
+def calculate_ols():
+    w = get_weight_from_file()
+    y = get_variable_vector()
+    x = get_matrix_x()
+    y.shape = (len(y), 1)
+
+    print(y)
+    print(x)
+    ols = GM_Error(y, x, w=w)
+    print(ols.summary)
+    print(ols.predy)

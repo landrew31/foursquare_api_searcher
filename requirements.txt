@@ -4,3 +4,6 @@ ujson >= 1.3.5
 parse >= 1.6.6
 foursquare
 aiohttp
+numpy
+scipy
+pysal
