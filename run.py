@@ -8,6 +8,7 @@ from aggregator import (
     regionalize_files,
     aggregate_info,
 )
+from helpers import categories_prefixes
 from spatial_module import (
     make_weights,
     calculate_gamma_index,
@@ -16,16 +17,18 @@ from spatial_module import (
     calculate_geary_c,
     calculate_local_moran,
     calculate_local_getis_and_ord,
-    calculate_ols,
+    calculate_sem,
+    calculate_sar,
+    calculate_durbin,
 )
 from command_executor import CommandExecutor
 
 
 command_mapper = {
-    'run_from_number': CommandExecutor(parse_map, (int,)),
+    'run_from_number': CommandExecutor(parse_map, types=(int,)),
     'get_categories': CommandExecutor(parse_categories),
-    'parse_square': CommandExecutor(parse_venues, (int,)),
-    'regionalize': CommandExecutor(regionalize_files, (int, int)),
+    'parse_square': CommandExecutor(parse_venues, types=(int,)),
+    'regionalize': CommandExecutor(regionalize_files, types=(int, int)),
     'aggregate': CommandExecutor(aggregate_info),
     'make_weights': CommandExecutor(make_weights),
     'gamma_index': CommandExecutor(calculate_gamma_index),
@@ -34,7 +37,21 @@ command_mapper = {
     'geary_c': CommandExecutor(calculate_geary_c),
     'local_moran': CommandExecutor(calculate_local_moran),
     'local_getis_ord': CommandExecutor(calculate_local_getis_and_ord),
-    'ols': CommandExecutor(calculate_ols),
+    'sem': CommandExecutor(
+        calculate_sem,
+        types=(str,),
+        params=(categories_prefixes,),
+    ),
+    'sar': CommandExecutor(
+        calculate_sar,
+        types=(str,),
+        params=(categories_prefixes,),
+    ),
+    'durbin': CommandExecutor(
+        calculate_durbin,
+        types=(str,),
+        params=(categories_prefixes,),
+    ),
 }
 
 

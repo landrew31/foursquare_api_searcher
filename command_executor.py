@@ -1,7 +1,8 @@
 class CommandExecutor:
-    def __init__(self, executor, arguments_types=()):
+    def __init__(self, executor, types=(), params=()):
         self.executor = executor
-        self.arguments_types = arguments_types
+        self.arguments_types = types
+        self.possible_params = params
         self.arguments = []
 
     def validate(self, arguments):
@@ -31,6 +32,18 @@ class CommandExecutor:
             else:
                 transformed_args.append(arg)
         self.arguments = transformed_args
+
+    def validate_possible_params(self):
+        for arg, arg_params in zip(self.arguments, self.possible_params):
+            if arg not in arg_params:
+                raise ValueError(
+                    'Argument {name} is wrong: {got}. Expected one of {expect}'.format(
+                        name=arg,
+                        got=arg,
+                        expect=arg_params,
+                    )
+                )
+
 
     def __call__(self, *args, **kwargs):
         self.executor(*self.arguments)

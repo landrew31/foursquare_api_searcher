@@ -1,11 +1,12 @@
 import pysal
 import math
+import csv
 import numpy as np
 
 from pysal.weights.weights import WSP, WSP2W
 from pysal.esda.getisord import G_Local
-from pysal.spreg.ols import OLS
-from pysal.spreg.error_sp import GM_Error, GM_Combo, GM_Endog_Error
+from pysal.spreg.ml_error import ML_Error
+from pysal.spreg.ml_lag import ML_Lag
 
 from scipy.sparse import csc_matrix
 
@@ -16,12 +17,13 @@ from helpers import (
     categories_prefixes,
     category_subfields,
     configure_logger,
+    ensure_dir,
 )
 
 
 
 log = configure_logger(__name__)
-REGION_BANDWIDTH = 0.1
+REGION_BANDWIDTH = 0.15
 WEIGHT_MATRIX_FILE_NAME = 'weights.gal'
 
 
@@ -96,11 +98,17 @@ def make_weights():
             ))
             dist_row.append(weight)
         dist_matr.append(dist_row)
+    with open('weights_all.csv', 'w') as f:
+        writer = csv.writer(f)
+        for row in dist_matr:
+            writer.writerow(row)
+
     log.info('Going to build PYSAL weight matrix.')
     wsp_matrix = WSP(csc_matrix(dist_matr))
     gal_format = pysal.open(WEIGHT_MATRIX_FILE_NAME, 'w')
     gal_format.write(WSP2W(wsp_matrix))
     gal_format.close()
+    return WSP2W(wsp_matrix)
 
 
 def get_weight_from_file():
@@ -108,17 +116,35 @@ def get_weight_from_file():
     return w_file.read()
 
 
-def get_variable_vector():
+def get_variable_vector(category='all'):
     data_file = pysal.open(AGGREGATED_FILE_NAME, 'r')
-    return np.array(data_file.by_col('all_count'))
+    col_name = '{}_count'.format(category)
+    return np.array(data_file.by_col(col_name))
 
 
-def get_matrix_x():
+def get_matrix_x(category='all'):
     data_file = pysal.open(AGGREGATED_FILE_NAME)
     x = []
-    for row in data_file:
-        x.append(row[6:45])
-    return np.array(x)
+    # for row in data_file:
+    #     x.append(row[47:54])
+    for field in category_subfields[1:]:
+        x.append(data_file.by_col('{}_{}'.format(category, field)))
+
+    if category == 'all':
+        return np.array(x).T
+
+    x_np = np.array(x).T
+    x_all = []
+    for field in category_subfields[1:]:
+        x_all.append(data_file.by_col('all_{}'.format(field)))
+
+    x_all_np = np.array(x_all).T
+    x_all_without_cat_np = x_all_np - x_np
+    return np.hstack((x_np, x_all_without_cat_np))
+
+
+# def get_matrix_travel_transport():
+
 
 
 def calculate_gamma_index():
@@ -186,14 +212,73 @@ def calculate_local_getis_and_ord():
     print(lg.p_sim)
 
 
-def calculate_ols():
+def calculate_sem(category):
     w = get_weight_from_file()
-    y = get_variable_vector()
-    x = get_matrix_x()
+    y = get_variable_vector(category)
+    x = get_matrix_x(category)
     y.shape = (len(y), 1)
+    ensure_dir('regression_results')
+    directory = 'regression_results/sem/'
+    ensure_dir(directory)
+    d = ML_Error(y, x, w=w)
+    with open('{}/{}.csv'.format(directory, category), 'w') as res_file:
+        writer = csv.writer(res_file)
+        writer.writerow(d.betas)
+        writer.writerow([d.lam])
+        writer.writerow(d.u)
+        writer.writerow(d.e_filtered)
+        writer.writerow(d.predy)
+        writer.writerow(d.y)
+        writer.writerow([d.mean_y])
+        writer.writerow([d.std_y])
+        writer.writerow([d.sig2])
+        writer.writerow([d.logll])
+        writer.writerow([d.aic])
+        writer.writerow([d.schwarz])
+        writer.writerow([d.pr2])
+        writer.writerow([d.utu])
+        writer.writerow(d.std_err)
+        writer.writerow(d.z_stat)
+    print(d.summary)
 
-    print(y)
-    print(x)
-    ols = GM_Error(y, x, w=w)
-    print(ols.summary)
-    print(ols.predy)
+
+def base_sar(category, method='sar'):
+    w = make_weights()
+    y = get_variable_vector(category)
+    x = get_matrix_x(category)
+    y.shape = (len(y), 1)
+    lag_x = pysal.lag_spatial(w, x)
+    new_x = np.hstack((x, lag_x)) if method == 'durbin' else x
+    d = ML_Lag(y, new_x, w=w, method='ord')
+    ensure_dir('regression_results/')
+    directory = 'regression_results/{}/'.format(method)
+    ensure_dir(directory)
+    with open('{}/{}.csv'.format(directory, category), 'w') as res_file:
+        writer = csv.writer(res_file)
+        writer.writerow(d.betas)
+        writer.writerow([d.rho])
+        writer.writerow(d.u)
+        writer.writerow(d.predy)
+        writer.writerow(d.y)
+        writer.writerow([d.mean_y])
+        writer.writerow([d.std_y])
+        writer.writerow([d.sig2])
+        writer.writerow([d.logll])
+        writer.writerow([d.aic])
+        writer.writerow([d.schwarz])
+        writer.writerow(d.predy_e)
+        writer.writerow(d.e_pred)
+        writer.writerow([d.pr2])
+        writer.writerow([d.pr2_e])
+        writer.writerow([d.utu])
+        writer.writerow(d.std_err)
+        writer.writerow(d.z_stat)
+    print(d.summary)
+
+
+def calculate_sar(category):
+    base_sar(category, method='sar')
+
+
+def calculate_durbin(category):
+    base_sar(category, method='durbin')
