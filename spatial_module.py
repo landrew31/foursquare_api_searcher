@@ -4,7 +4,6 @@ import csv
 import numpy as np
 
 from pysal.weights.weights import WSP, WSP2W
-from pysal.esda.getisord import G_Local
 from pysal.spreg.ml_error import ML_Error
 from pysal.spreg.ml_lag import ML_Lag
 
@@ -125,8 +124,6 @@ def get_variable_vector(category='all'):
 def get_matrix_x(category='all'):
     data_file = pysal.open(AGGREGATED_FILE_NAME)
     x = []
-    # for row in data_file:
-    #     x.append(row[47:54])
     for field in category_subfields[1:]:
         x.append(data_file.by_col('{}_{}'.format(category, field)))
 
@@ -143,14 +140,21 @@ def get_matrix_x(category='all'):
     return np.hstack((x_np, x_all_without_cat_np))
 
 
-# def get_matrix_travel_transport():
-
-
-
-def calculate_gamma_index():
+def calculate_gamma_index(category):
     w = get_weight_from_file()
-    y = get_variable_vector()
+    y = get_variable_vector(category)
     g = pysal.Gamma(y, w)
+    ensure_dir('estimation_results/')
+    directory = 'estimation_results/gamma'
+    ensure_dir(directory)
+    with open('{}/{}.csv'.format(directory, category), 'w') as res_file:
+        writer = csv.writer(res_file)
+        writer.writerow([g.g])
+        writer.writerow([g.sim_g])
+        writer.writerow([g.p_sim_g])
+        writer.writerow([g.mean_g])
+        writer.writerow([g.min_g])
+        writer.writerow([g.max_g])
     print(g.g)
     print("%.3f"%g.g_z)
     print(g.p_sim_g)
@@ -159,20 +163,40 @@ def calculate_gamma_index():
     print(g.mean_g)
 
 
-def calculate_join_count_statistics():
+def calculate_join_count_statistics(category):
     w = get_weight_from_file()
-    y = get_variable_vector()
+    y = get_variable_vector(category)
     jc = pysal.Join_Counts(y, w)
+    ensure_dir('estimation_results/')
+    directory = 'estimation_results/join_count_statistics'
+    ensure_dir(directory)
+    with open('{}/{}.csv'.format(directory, category), 'w') as res_file:
+        writer = csv.writer(res_file)
+        writer.writerow([jc.bb])
+        writer.writerow([jc.ww])
+        writer.writerow([jc.bw])
+        writer.writerow([jc.J])
     print(jc.bb)
     print(jc.bw)
     print(jc.ww)
     print(jc.J)
 
 
-def calculate_moran_i():
+def calculate_moran_i(category):
     w = get_weight_from_file()
-    y = get_variable_vector()
+    y = get_variable_vector(category)
     mi = pysal.Moran(y, w)
+    ensure_dir('estimation_results/')
+    directory = 'estimation_results/moran'
+    ensure_dir(directory)
+    with open('{}/{}.csv'.format(directory, category), 'w') as res_file:
+        writer = csv.writer(res_file)
+        writer.writerow([mi.I])
+        writer.writerow([mi.EI])
+        writer.writerow([mi.VI_norm])
+        writer.writerow([mi.seI_norm])
+        writer.writerow([mi.z_norm])
+        writer.writerow([mi.p_norm])
     print("%.3f" % mi.I)
     print(mi.EI)
     print("%.3f" % mi.z_norm)
@@ -183,33 +207,47 @@ def calculate_moran_i():
     print(mir.p_sim)
 
 
-def calculate_geary_c():
+def calculate_geary_c(category):
     w = get_weight_from_file()
-    y = get_variable_vector()
+    y = get_variable_vector(category)
     gc = pysal.Geary(y, w)
+    ensure_dir('estimation_results/')
+    directory = 'estimation_results/geary_c'
+    ensure_dir(directory)
+    with open('{}/{}.csv'.format(directory, category), 'w') as res_file:
+        writer = csv.writer(res_file)
+        writer.writerow([gc.C])
+        writer.writerow([gc.EC])
+        writer.writerow([gc.VC_norm])
+        writer.writerow([gc.z_norm])
+        writer.writerow([gc.p_norm])
     print("%.3f" % gc.C)
     print(gc.EC)
     print("%.3f" % gc.z_norm)
     print(gc.p_sim)
 
 
-def calculate_local_moran():
+def calculate_local_moran(category):
     w = get_weight_from_file()
-    y = get_variable_vector()
+    y = get_variable_vector(category)
     lm = pysal.Moran_Local(y, w)
+    ensure_dir('estimation_results/')
+    directory = 'estimation_results/moran_local'
+    ensure_dir(directory)
+    with open('{}/{}.csv'.format(directory, category), 'w') as res_file:
+        writer = csv.writer(res_file)
+        writer.writerow([lm.Is])
+        writer.writerow([lm.q])
+        writer.writerow([lm.p_sim])
+        writer.writerow([lm.EI_sim])
+        writer.writerow([lm.VI_sim])
+        writer.writerow([lm.seI_sim])
+        writer.writerow([lm.z_sim])
+        writer.writerow([lm.p_z_sim])
     print(lm.p_sim)
     sig = lm.p_sim < 0.01
     print(lm.p_sim[sig])
     print(lm.q[sig])
-
-
-def calculate_local_getis_and_ord():
-    w = get_weight_from_file()
-    y = get_variable_vector()
-    lg = G_Local(y, w)
-    print(lg.p_sim)
-    lg = G_Local(y, w, star=True)
-    print(lg.p_sim)
 
 
 def calculate_sem(category):
