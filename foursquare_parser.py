@@ -115,7 +115,9 @@ def process_square(location, writer):
         process_venues(foursquare_ids, writer)
 
 
-def parse_venues(location, number):
+def parse_venues(number, location=None):
+    if not location:
+        location = get_kyiv_square_by_number(number)
     ensure_dir(DIRECTORY_PATTERN)
     file_name = FILE_NAME_PATTERN.format(
         dir=DIRECTORY_PATTERN,
@@ -187,6 +189,6 @@ def parse_map(start_parse_number=1):
             num=i,
         )):
             log.info('Going to parse venues for square: {}'.format(i))
-            parse_venues(get_kyiv_square_by_number(i), i)
+            parse_venues(i, get_kyiv_square_by_number(i))
         else:
             log.info('Venues for square: {} already exists!'.format(i))
