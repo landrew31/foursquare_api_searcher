@@ -71,4 +71,8 @@
   * **sar** (*param1: str*)- run Spatial Autoregressive Model (Spatial Lag Model) for count of vanues for appropriate category
   
   * **durbin** (*param1: str*)- run Spatial Durbin Model for count of vanues for appropriate category
+
+  * **plot** (*param1: str*)- plot Local Moran on square map
+
+  * **plot_histograms** (*param1: str*)- plot Durbin model resolution on square map
   

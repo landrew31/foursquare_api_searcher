@@ -248,6 +248,7 @@ def calculate_local_moran(category):
     sig = lm.p_sim < 0.01
     print(lm.p_sim[sig])
     print(lm.q[sig])
+    return lm
 
 
 def calculate_sem(category):
@@ -312,6 +313,7 @@ def base_sar(category, method='sar'):
         writer.writerow(d.std_err)
         writer.writerow(d.z_stat)
     print(d.summary)
+    return d
 
 
 def calculate_sar(category):
@@ -319,4 +321,4 @@ def calculate_sar(category):
 
 
 def calculate_durbin(category):
-    base_sar(category, method='durbin')
+    return base_sar(category, method='durbin')

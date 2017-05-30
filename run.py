@@ -20,8 +20,11 @@ from spatial_module import (
     calculate_sar,
     calculate_durbin,
 )
+from plotting import (
+    plot,
+    plot_histograms,
+)
 from command_executor import CommandExecutor
-
 
 command_mapper = {
     'run_from_number': CommandExecutor(parse_map, types=(int,)),
@@ -70,6 +73,16 @@ command_mapper = {
         types=(str,),
         params=(categories_prefixes,),
     ),
+    'plot': CommandExecutor(
+        plot,
+        types=(str,),
+        params=(categories_prefixes,),
+    ),
+    'plot_histograms': CommandExecutor(
+        plot_histograms,
+        types=(str,),
+        params=(categories_prefixes,),
+    )
 }
 
 
